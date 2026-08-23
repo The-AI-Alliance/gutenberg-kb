@@ -20,7 +20,7 @@ import {
   resourceId as ridBrand,
   type AnnotationId,
   type GatheredContext,
-  type KnowledgeBase,
+  type KbTarget,
   type ResourceId,
 } from '@semiont/sdk';
 import { wikipediaSearch } from '../../src/wikipedia.js';
@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   const email = process.env.SEMIONT_USER_EMAIL!;
   const password = process.env.SEMIONT_USER_PASSWORD!;
   const u = new URL(baseUrl);
-  const kb: KnowledgeBase = {
+  const kb: KbTarget = {
     id: 'gutenberg-build-character-articles',
     label: 'gutenberg build-character-articles',
     email,
@@ -49,14 +49,14 @@ async function main(): Promise<void> {
   const semiont = session.client;
 
   try {
-    const all = await semiont.browse.resources({ limit: 1000 });
+    const all = (await semiont.browse.resources({ limit: 1000 }).fresh()).resources;
     const passages = all.filter((r) => (r.entityTypes ?? []).some((t) => t === 'LiteraryPassage'));
 
     type AnnoRef = { rId: ResourceId; annId: AnnotationId; text: string; entityTypes: string[] };
     const characterAnnotations: AnnoRef[] = [];
     for (const r of passages) {
       const rId = ridBrand(r['@id']);
-      const annotations = await semiont.browse.annotations(rId);
+      const annotations = await semiont.browse.annotations(rId).fresh();
       for (const ann of annotations) {
         if (ann.motivation !== 'linking') continue;
         const bodies = Array.isArray(ann.body) ? ann.body : ann.body ? [ann.body] : [];
