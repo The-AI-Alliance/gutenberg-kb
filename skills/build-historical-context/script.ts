@@ -21,7 +21,7 @@ import {
   entityType,
   resourceId as ridBrand,
   type GatheredContext,
-  type KnowledgeBase,
+  type KbTarget,
   type ResourceId,
 } from '@semiont/sdk';
 import { wikipediaSearch } from '../../src/wikipedia.js';
@@ -49,7 +49,7 @@ async function main(): Promise<void> {
   const email = process.env.SEMIONT_USER_EMAIL!;
   const password = process.env.SEMIONT_USER_PASSWORD!;
   const u = new URL(baseUrl);
-  const kb: KnowledgeBase = {
+  const kb: KbTarget = {
     id: 'gutenberg-build-historical-context',
     label: 'gutenberg build-historical-context',
     email,
@@ -68,7 +68,7 @@ async function main(): Promise<void> {
     if (explicitResourceId) {
       targets = [ridBrand(explicitResourceId)];
     } else {
-      const all = await semiont.browse.resources({ limit: 1000 });
+      const all = (await semiont.browse.resources({ limit: 1000 }).fresh()).resources;
       targets = all
         .filter((r) =>
           // Look for "Argument" passages — typically the work's framing — as anchors.
@@ -129,7 +129,7 @@ single tag value per anchor.
       });
       console.log(`  Created ${createdCount(progress)} anchor annotations.`);
 
-      const annotations = await semiont.browse.annotations(rId);
+      const annotations = await semiont.browse.annotations(rId).fresh();
       const anchors = annotations.filter((ann) => {
         if (ann.motivation !== 'linking') return false;
         // Heuristic: anchors are short tagged spans. Skip annotations bound to

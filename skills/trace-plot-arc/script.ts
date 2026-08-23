@@ -14,7 +14,7 @@
  * Usage: tsx skills/trace-plot-arc/script.ts [<workNamePattern>] [--interactive]
  */
 
-import { SemiontSession, InMemorySessionStorage, resourceId as ridBrand, type KnowledgeBase, type ResourceId } from '@semiont/sdk';
+import { SemiontSession, InMemorySessionStorage, resourceId as ridBrand, type KbTarget, type ResourceId } from '@semiont/sdk';
 import { confirm, close as closeInteractive } from '../../src/interactive.js';
 
 const PLOT_FRAMEWORK = process.env.PLOT_FRAMEWORK ?? 'auto';
@@ -40,7 +40,7 @@ async function main(): Promise<void> {
   const email = process.env.SEMIONT_USER_EMAIL!;
   const password = process.env.SEMIONT_USER_PASSWORD!;
   const u = new URL(baseUrl);
-  const kb: KnowledgeBase = {
+  const kb: KbTarget = {
     id: 'gutenberg-trace-plot-arc',
     label: 'gutenberg trace-plot-arc',
     email,
@@ -50,7 +50,7 @@ async function main(): Promise<void> {
   const semiont = session.client;
 
   try {
-    const all = await semiont.browse.resources({ limit: 1000 });
+    const all = (await semiont.browse.resources({ limit: 1000 }).fresh()).resources;
     let passages = all.filter((r) => (r.entityTypes ?? []).some((t) => t === 'LiteraryPassage'));
 
     if (workPattern) {
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
     const rows: PassageRow[] = [];
     for (const r of passages) {
       const rId = ridBrand(r['@id']);
-      const annotations = await semiont.browse.annotations(rId);
+      const annotations = await semiont.browse.annotations(rId).fresh();
       let dangerCount = 0;
       let subtextCount = 0;
       const boundRefs: string[] = [];

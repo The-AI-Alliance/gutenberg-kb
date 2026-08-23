@@ -9,7 +9,7 @@
  * Usage: tsx skills/comment-subtext/script.ts [<resourceId>] [--interactive]
  */
 
-import { SemiontSession, InMemorySessionStorage, resourceId as ridBrand, type KnowledgeBase, type ResourceId } from '@semiont/sdk';
+import { SemiontSession, InMemorySessionStorage, resourceId as ridBrand, type KbTarget, type ResourceId } from '@semiont/sdk';
 import { confirm, close as closeInteractive } from '../../src/interactive.js';
 import { createdCount } from '../../src/mark-result.js';
 
@@ -31,7 +31,7 @@ async function main(): Promise<void> {
   const email = process.env.SEMIONT_USER_EMAIL!;
   const password = process.env.SEMIONT_USER_PASSWORD!;
   const u = new URL(baseUrl);
-  const kb: KnowledgeBase = {
+  const kb: KbTarget = {
     id: 'gutenberg-comment-subtext',
     label: 'gutenberg comment-subtext',
     email,
@@ -45,7 +45,7 @@ async function main(): Promise<void> {
     if (explicitResourceId) {
       targets = [ridBrand(explicitResourceId)];
     } else {
-      const all = await semiont.browse.resources({ limit: 1000 });
+      const all = (await semiont.browse.resources({ limit: 1000 }).fresh()).resources;
       targets = all
         .filter((r) => (r.entityTypes ?? []).some((t) => t === 'LiteraryPassage'))
         .map((r) => ridBrand(r['@id']));
