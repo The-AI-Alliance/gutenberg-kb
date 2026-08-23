@@ -135,7 +135,7 @@ single tag value per anchor.
         // Heuristic: anchors are short tagged spans. Skip annotations bound to
         // existing resources (those are likely from prior skills).
         const bodies = Array.isArray(ann.body) ? ann.body : ann.body ? [ann.body] : [];
-        return !bodies.some((b: any) => b.type === 'SpecificResource');
+        return !bodies.some((b) => b.type === 'SpecificResource');
       });
 
       for (const ann of anchors) {

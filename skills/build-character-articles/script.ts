@@ -61,8 +61,11 @@ async function main(): Promise<void> {
         if (ann.motivation !== 'linking') continue;
         const bodies = Array.isArray(ann.body) ? ann.body : ann.body ? [ann.body] : [];
         const ets = bodies
-          .filter((b: any) => b.type === 'TextualBody' && b.purpose === 'tagging')
-          .flatMap((b: any) => Array.isArray(b.value) ? b.value : [b.value]);
+          .flatMap((b) =>
+            b.type === 'TextualBody' && b.purpose === 'tagging'
+              ? (Array.isArray(b.value) ? b.value : [b.value])
+              : [],
+          );
         const matchedChars = ets.filter((t: string) => CHARACTER_TYPES.has(t));
         if (matchedChars.length === 0) continue;
         const target = ann.target;
