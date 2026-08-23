@@ -76,8 +76,7 @@ async function main(): Promise<void> {
         if (ann.motivation === 'commenting') subtextCount++;
         const bodies = Array.isArray(ann.body) ? ann.body : ann.body ? [ann.body] : [];
         const refs = bodies
-          .filter((b: any) => b.type === 'SpecificResource')
-          .map((b: any) => b.source);
+          .flatMap((b) => (b.type === 'SpecificResource' ? [b.source] : []));
         boundRefs.push(...refs);
       }
       rows.push({ rId, name: r.name ?? r['@id'], dangerCount, subtextCount, boundRefs });
