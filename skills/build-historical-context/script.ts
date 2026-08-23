@@ -5,7 +5,7 @@
  * Iterates over works in the corpus (one per author/work directory). For each
  * target passage, mark.assist identifies historical anchors (the era of the
  * author, prior tradition, audience and venue, real events, philosophical /
- * religious concepts), and yield.fromAnnotation synthesizes a HistoricalContext
+ * religious concepts), and yield.fromContext synthesizes a HistoricalContext
  * resource per anchor — model writes the body grounded in the gathered
  * context, with the Wikipedia URL woven in via the prompt. Synthesized
  * resources are stamped with 'HistoricalContext', 'Historical', and
@@ -172,10 +172,9 @@ single tag value per anchor.
         const gather = await semiont.gather.annotation(rId, ann.id, { contextWindow: 1500 });
         if (!('response' in gather)) continue;
         const context = gather.response as GatheredContext;
-        const yieldEvent = await semiont.yield.fromAnnotation(rId, ann.id, {
+        const yieldEvent = await semiont.yield.fromContext(context, {
           title: text,
           storageUri: `file://generated/historical-${slugify(text)}.md`,
-          context,
           prompt,
           entityTypes: ['HistoricalContext', 'Historical', 'Wikipedia'],
         });
@@ -185,7 +184,7 @@ single tag value per anchor.
         }
         const newRId = (yieldEvent.data.result as { resourceId?: string } | undefined)?.resourceId;
         if (!newRId) {
-          console.warn(`  yield.fromAnnotation gave no resourceId for "${text}"`);
+          console.warn(`  yield.fromContext gave no resourceId for "${text}"`);
           continue;
         }
         synthesized++;
