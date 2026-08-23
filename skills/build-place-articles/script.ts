@@ -3,7 +3,7 @@
  *
  * Cluster place annotations by canonical text, match each cluster against
  * existing Place resources (including pre-curated articles ingested by skill 1),
- * synthesize new ones with yield.fromAnnotation otherwise, bind annotations.
+ * synthesize new ones with yield.fromContext otherwise, bind annotations.
  * The model writes the article body grounded in the gathered context; the
  * Wikipedia URL is woven into an External references section via the prompt.
  * Synthesized resources are stamped with 'Place' plus any sub-types the
@@ -146,10 +146,9 @@ async function main(): Promise<void> {
           `\n${externalRefsLine}\n` +
           `Write in a neutral, encyclopedic tone — model on a curated wiki article.`;
 
-        const yieldEvent = await semiont.yield.fromAnnotation(sample.rId, sample.annId, {
+        const yieldEvent = await semiont.yield.fromContext(context, {
           title: sample.text,
           storageUri: `file://generated/place-${slugify(sample.text)}.md`,
-          context,
           prompt,
           // Stamp the synthesized resource with 'Place' plus any sub-types
           // the source annotations carried. De-duplicated.
@@ -161,7 +160,7 @@ async function main(): Promise<void> {
         }
         const newRId = (yieldEvent.data.result as { resourceId?: string } | undefined)?.resourceId;
         if (!newRId) {
-          console.warn(`  yield.fromAnnotation gave no resourceId for "${sample.text}"`);
+          console.warn(`  yield.fromContext gave no resourceId for "${sample.text}"`);
           continue;
         }
         targetResourceId = newRId;

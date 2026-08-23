@@ -26,8 +26,8 @@ If you're an AI assistant working in this repo, this file is your orientation. T
 | [`mark-places`](skills/mark-places/) | Detect Place mentions | `mark.assist` (linking) |
 | [`assess-dangerous-situations`](skills/assess-dangerous-situations/) | Flag spans of physical / moral / supernatural danger | `mark.assist` (assessing) |
 | [`comment-subtext`](skills/comment-subtext/) | Inline subtext / inner-thought / plot-significance commentary | `mark.assist` (commenting) |
-| [`build-character-articles`](skills/build-character-articles/) | Promote Character mentions to canonical wiki-style Character resources with Wikipedia citations | `+ yield.fromAnnotation` |
-| [`build-place-articles`](skills/build-place-articles/) | Promote Place mentions to canonical Place resources with Wikipedia citations; matches against curated articles | `+ yield.fromAnnotation` |
+| [`build-character-articles`](skills/build-character-articles/) | Promote Character mentions to canonical wiki-style Character resources with Wikipedia citations | `+ yield.fromContext` |
+| [`build-place-articles`](skills/build-place-articles/) | Promote Place mentions to canonical Place resources with Wikipedia citations; matches against curated articles | `+ yield.fromContext` |
 | [`map-relationships`](skills/map-relationships/) | Extract character-character + character-place relationships, encode as binding annotations | `mark.assist`, `bind.body` |
 | [`build-historical-context`](skills/build-historical-context/) | Synthesize HistoricalContext resources anchoring the work in real-world history, citing Wikipedia | `+ yield.resource` |
 | [`extract-themes`](skills/extract-themes/) | Tag and synthesize Theme resources for recurring thematic concerns | `mark.assist` (tagging) |
