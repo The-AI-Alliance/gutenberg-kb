@@ -36,7 +36,7 @@ Before bulk upload: `confirm` after showing the per-class summary.
 
 ## Run it
 
-**Prerequisite: the Semiont backend is running** — see [AGENTS.md › Backend setup](../../AGENTS.md#backend-setup).
+**Prerequisite: the Semiont stack is running** — see [AGENTS.md › Stack setup](../../AGENTS.md#stack-setup).
 
 ```bash
 HOST_ADDR=$(container run --rm node:24-alpine sh -c "ip route | awk '/default/{print \$3}'" 2>/dev/null | tr -d '[:space:]')
@@ -61,6 +61,6 @@ Per-file resource id and entity types. Note these — downstream skills (`mark-c
 
 ## Guidance for the AI assistant
 
-- **Re-running creates duplicates.** No deduplication. Use `semiont.browse.resources({ search: '<title>' })` to check before re-running, or restart the backend stack to start fresh.
+- **Re-running creates duplicates.** No deduplication. Use `semiont.browse.resources({ search: '<title>' })` to check before re-running, or restart the stack to start fresh.
 - **Pre-curated `places/`, `characters/`, `themes/` content survives.** Skill 1 ingests them as Place / Character / Theme resources on day 1; skills 6 and 7 match against them rather than overwriting. A user wanting to seed their own KB with curated articles drops them into the appropriate subdirectory.
 - **`data/ebooks/` contents are mostly informational.** They're cataloged as Ebook resources but downstream skills don't operate on them directly — `mark-*` skills work on the section files. Useful for "where did this passage come from" lookups.
